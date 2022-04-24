@@ -18,10 +18,13 @@ from django.urls import path, include
 # from xadmin.plugins import xversion
 import xadmin
 from django.conf.urls import url
+from django.views.static import serve
+from VueShop.settings import MEDIA_ROOT
 
 
 # xversion.register_models()
 # xadmin.autodiscover()
 urlpatterns = [
-    url(r'', xadmin.site.urls),
+    url(r'^', xadmin.site.urls),
+    url(r'^(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 ]
