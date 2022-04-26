@@ -14,17 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-# from xadmin.plugins import xversion
+from django.urls import path, include, re_path
+from xadmin.plugins import xversion
 import xadmin
 from django.conf.urls import url
 from django.views.static import serve
 from VueShop.settings import MEDIA_ROOT
+# from goods.views_base import GoodsListView
+from rest_framework.documentation import include_docs_urls
+from goods.views import GoodsListView
 
 
-# xversion.register_models()
-# xadmin.autodiscover()
+xversion.register_models()
+xadmin.autodiscover()
 urlpatterns = [
-    url(r'^', xadmin.site.urls),
-    url(r'^(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+    path(r'xadmin/', xadmin.site.urls),
+    re_path(r'media/(?P<path>.*?)$', serve, {'document_root': MEDIA_ROOT}),
+    #  商品列表详情页面
+    path(r'goods/', GoodsListView.as_view(), name='goods-list-1'),
+    path(r'docs/', include_docs_urls(title='b')),
+    path('api-auth/', include('rest_framework.urls'))
 ]

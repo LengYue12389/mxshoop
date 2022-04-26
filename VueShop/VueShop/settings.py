@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'reversion',
     'django.conf',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -145,7 +146,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA = '/media'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 
