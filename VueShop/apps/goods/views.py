@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.viewsets import ViewSetMixin
 
 from .serializers import GoodsSerializers
 from rest_framework.views import APIView
@@ -7,6 +8,8 @@ from rest_framework.response import Response
 from .models import Goods
 from rest_framework import mixins
 from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import viewsets
 
 
 # class GoodsListView(APIView):
@@ -26,12 +29,17 @@ from rest_framework import generics
 #     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GoodsListView(generics.GenericAPIView, mixins.ListModelMixin):
+class GoodsResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_query_param = 'p'
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+
+class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     商品列表页
     """
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializers
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    pagination_class = GoodsResultsSetPagination

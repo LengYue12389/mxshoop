@@ -22,16 +22,24 @@ from django.views.static import serve
 from VueShop.settings import MEDIA_ROOT
 # from goods.views_base import GoodsListView
 from rest_framework.documentation import include_docs_urls
-from goods.views import GoodsListView
+from goods.views import GoodsListViewSet
+from rest_framework.routers import DefaultRouter
 
-
+# 创建路由器并注册我们的视图。
+router = DefaultRouter()
 xversion.register_models()
 xadmin.autodiscover()
+
+# goods_list = GoodsListViewSet.as_view({
+#     'get': 'list',
+# })
+
+router.register(r'goods', GoodsListViewSet)
 urlpatterns = [
     path(r'xadmin/', xadmin.site.urls),
     re_path(r'media/(?P<path>.*?)$', serve, {'document_root': MEDIA_ROOT}),
     #  商品列表详情页面
-    path(r'goods/', GoodsListView.as_view(), name='goods-list-1'),
+    url(r'^', include(router.urls)),
     path(r'docs/', include_docs_urls(title='b')),
     path('api-auth/', include('rest_framework.urls'))
 ]
