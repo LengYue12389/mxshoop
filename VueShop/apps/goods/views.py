@@ -1,15 +1,12 @@
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.viewsets import ViewSetMixin
-
-from .serializers import GoodsSerializers
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Goods
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework import mixins
-from rest_framework import generics
-from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
+
+from .filters import GoodsFilter
+from .models import Goods
+from .serializers import GoodsSerializers
 
 
 # class GoodsListView(APIView):
@@ -36,6 +33,18 @@ class GoodsResultsSetPagination(PageNumberPagination):
     max_page_size = 1000
 
 
+# class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+#     """
+#     商品列表页
+#     """
+#     queryset = Goods.objects.all()
+#     serializer_class = GoodsSerializers
+#     pagination_class = GoodsResultsSetPagination
+#     # 加上过虑器
+#     filter_backends = (DjangoFilterBackend,)
+#     filter_fields = ('name', 'shop_price')
+
+
 class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     商品列表页
@@ -43,3 +52,7 @@ class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializers
     pagination_class = GoodsResultsSetPagination
+    # 加上过虑器
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filter_class = GoodsFilter
+    search_fields = ['name', 'goods_brief', 'goods_desc']
